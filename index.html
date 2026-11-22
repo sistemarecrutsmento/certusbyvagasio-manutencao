@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#24000e">
+  <meta name="description" content="Certus by VAGASIO está em manutenção. Fale com nosso setor comercial pelo WhatsApp.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Certus by VAGASIO — Página em manutenção">
+  <meta property="og:description" content="Saiba mais sobre nossos produtos. Entre em contato com o setor comercial pelo WhatsApp.">
+  <title>Certus by VAGASIO | Página em manutenção</title>
+  <style>
+    :root{color-scheme:dark;--wine:#320015;--pink:#ed0750;--rose:#ff346e;--ink:#fff8fa;--muted:#e4cbd3}
+    *{box-sizing:border-box}
+    html,body{min-height:100%;margin:0}
+    body{min-height:100svh;display:grid;place-items:center;overflow-x:hidden;padding:32px 20px;background:radial-gradient(ellipse at 78% 18%,rgba(226,0,67,.26),transparent 35%),radial-gradient(ellipse at 15% 88%,rgba(136,0,43,.42),transparent 38%),linear-gradient(135deg,#18000a 0%,#360017 54%,#21000e 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+    body:before,body:after{content:"";position:fixed;z-index:-1;width:440px;height:440px;border:1px solid rgba(255,44,105,.18);border-radius:50%;pointer-events:none;animation:orbit 22s linear infinite}
+    body:before{right:-240px;top:-210px;box-shadow:0 0 0 34px rgba(255,44,105,.035),0 0 0 70px rgba(255,44,105,.025)}
+    body:after{left:-300px;bottom:-300px;width:560px;height:560px;animation-direction:reverse;box-shadow:0 0 0 42px rgba(255,44,105,.03),0 0 0 86px rgba(255,44,105,.02)}
+    .wrap{width:min(100%,710px);animation:enter .8s cubic-bezier(.2,.75,.25,1) both}
+    .card{position:relative;overflow:hidden;padding:clamp(30px,7vw,62px);border:1px solid rgba(255,255,255,.12);border-radius:28px;background:linear-gradient(145deg,rgba(74,9,34,.82),rgba(33,3,17,.9));box-shadow:0 28px 90px rgba(9,0,5,.52),inset 0 1px rgba(255,255,255,.08);text-align:center;backdrop-filter:blur(16px)}
+    .card:before{content:"";position:absolute;inset:0 18% auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,88,131,.8),transparent)}
+    .logo-shell{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:15px;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.18);animation:soft-rise .9s .08s both}
+    .logo{display:block;width:min(100%,300px);height:auto}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;margin:34px 0 17px;padding:8px 13px;border:1px solid rgba(255,68,119,.36);border-radius:999px;background:rgba(216,0,63,.11);color:#ffc1d0;font-size:11px;font-weight:750;letter-spacing:.16em;text-transform:uppercase;animation:soft-rise .8s .16s both}
+    .dot{width:7px;height:7px;border-radius:50%;background:#ff3d77;box-shadow:0 0 14px #ff3d77;animation:pulse 1.9s ease-in-out infinite}
+    h1{max-width:590px;margin:0 auto;color:#fff;font-size:clamp(34px,7vw,58px);line-height:1.04;letter-spacing:-.052em;font-weight:760;animation:soft-rise .8s .23s both}
+    .accent{color:#ff5b88}
+    .copy{max-width:500px;margin:22px auto 0;color:var(--muted);font-size:clamp(15px,2.4vw,18px);line-height:1.75;animation:soft-rise .8s .31s both}
+    .cta{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:58px;margin-top:31px;padding:0 27px;border:1px solid rgba(255,255,255,.28);border-radius:14px;background:linear-gradient(135deg,#f10a50,#c90042);box-shadow:0 12px 30px rgba(220,0,64,.3),inset 0 1px rgba(255,255,255,.27);color:#fff;text-decoration:none;font-size:15px;font-weight:760;letter-spacing:.01em;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;animation:soft-rise .8s .39s both}
+    .cta:hover{transform:translateY(-3px);filter:brightness(1.08);box-shadow:0 17px 36px rgba(220,0,64,.4),inset 0 1px rgba(255,255,255,.28)}
+    .cta:focus-visible{outline:3px solid #fff;outline-offset:4px}
+    .cta svg{width:21px;height:21px;flex:none}
+    .phone{margin:14px 0 0;color:#d8b5c0;font-size:13px;animation:soft-rise .8s .45s both}
+    .footer{margin:22px 0 0;color:rgba(255,239,244,.56);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+    @keyframes enter{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes soft-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 14px #ff3d77}50%{opacity:.55;box-shadow:0 0 5px #ff3d77}}
+    @keyframes orbit{to{transform:rotate(360deg)}}
+    @media(max-width:520px){body{padding:18px 14px}.card{padding:32px 22px;border-radius:22px}.logo-shell{padding:8px 15px}.logo{width:min(65vw,270px)}.eyebrow{margin-top:28px;font-size:10px;letter-spacing:.13em}.cta{width:100%;padding:0 16px}.footer{font-size:10px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card" aria-labelledby="title">
+      <div class="logo-shell"><img class="logo" src="logo-certus.jpg" alt="Certus by VAGASIO"></div>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Comunicado oficial</p>
+      <h1 id="title">Página em <span class="accent">manutenção</span></h1>
+      <p class="copy">Estamos realizando melhorias. Para saber mais sobre nossos produtos, entre em contato com o setor comercial pelo botão abaixo.</p>
+      <a class="cta" href="https://wa.me/5516997902168" target="_blank" rel="noopener noreferrer" aria-label="Falar com o setor comercial da Certus pelo WhatsApp">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.4-4.7a8.5 8.5 0 1 1 16.1-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.7 8.3c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4-.1.6l-.6.7c-.2.2-.2.4 0 .6.5.9 1.3 1.7 2.3 2.2.2.1.4.1.6-.1l.8-.9c.2-.2.4-.2.6-.1l1.7.8c.2.1.4.3.4.5 0 .4-.2 1.1-.7 1.5-.5.5-1.2.7-1.9.6-1.1-.2-2.4-.8-3.8-2-1.2-1.1-2.1-2.4-2.4-3.4-.3-.9-.1-1.7.6-2.4Z" fill="currentColor"/></svg>
+        Falar com o setor comercial
+      </a>
+      <p class="phone">Atendimento pelo WhatsApp · (16) 99790-2168</p>
+    </section>
+    <p class="footer">Certus by VAGASIO</p>
+  </main>
+</body>
+</html>
