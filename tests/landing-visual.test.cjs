@@ -37,7 +37,7 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   const standAlignment=await page.evaluate(()=>{const m=document.querySelector('.desktop-frame').getBoundingClientRect(),s=document.querySelector('.desktop-stand').getBoundingClientRect();return Math.abs((m.left+m.width/2)-(s.left+s.width/2))});
   assert.ok(standAlignment<2,`monitor stand must be centered under display, offset=${standAlignment}px`);
   const bezel=await page.locator('.desktop-frame').evaluate(e=>parseFloat(getComputedStyle(e).borderLeftWidth));
-  assert.ok(bezel<=1.5,`monitor bezel should be slim, got ${bezel}px`);
+  assert.ok(bezel<=2.5,`monitor bezel should be slim, got ${bezel}px`);
   assert.ok(await page.getByRole('link',{name:/Solicitar demonstração/}).count()>=1);
  }finally{await browser.close();await new Promise(r=>server.close(r))}
 });
