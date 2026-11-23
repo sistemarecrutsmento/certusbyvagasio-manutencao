@@ -30,6 +30,8 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.ok(deviceRatios.every(x=>Math.abs(x.actual-x.native)<0.04),`device screenshots must preserve their original proportions: ${JSON.stringify(deviceRatios)}`);
   const portraitTablet=await page.locator('.tablet-frame img').evaluate(i=>i.naturalHeight>i.naturalWidth);
   assert.equal(portraitTablet,true,'shared terminal must be shown on a portrait tablet');
+  const deviceSizeRatio=await page.evaluate(()=>document.querySelector('.tablet-frame').getBoundingClientRect().width/document.querySelector('.phone-frame').getBoundingClientRect().width);
+  assert.ok(deviceSizeRatio>2,`tablet must read visibly larger than phone, width ratio=${deviceSizeRatio}`);
   const standAlignment=await page.evaluate(()=>{const m=document.querySelector('.desktop-frame').getBoundingClientRect(),s=document.querySelector('.desktop-stand').getBoundingClientRect();return Math.abs((m.left+m.width/2)-(s.left+s.width/2))});
   assert.ok(standAlignment<2,`monitor stand must be centered under display, offset=${standAlignment}px`);
   const bezel=await page.locator('.desktop-frame').evaluate(e=>parseFloat(getComputedStyle(e).borderLeftWidth));
