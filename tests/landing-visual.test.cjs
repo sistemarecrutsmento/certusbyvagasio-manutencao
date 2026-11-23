@@ -19,7 +19,7 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.match(await promo.innerText(),/BLACK FRIDAY/);
   assert.match(await promo.innerText(),/Black2026/);
   assert.match(await promo.innerText(),/25%/);
-  assert.match(await promo.innerText(),/de\s*desconto/);
+  assert.match(await promo.innerText(),/DE\s+DESCONTO/i);
   assert.equal(await promo.locator('img').count(),0,'promotion is recreated with native HTML/CSS, not embedded artwork');
   assert.equal(await promo.getByRole('link').count(),1,'the modal should have exactly one primary action');
   await assert.equal(await promo.getByRole('link').innerText().then(x=>x.trim()),'Contrate agora →');
