@@ -32,6 +32,8 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.equal(portraitTablet,true,'shared terminal must be shown on a portrait tablet');
   const deviceSizeRatio=await page.evaluate(()=>document.querySelector('.tablet-frame').getBoundingClientRect().width/document.querySelector('.phone-frame').getBoundingClientRect().width);
   assert.ok(deviceSizeRatio>2,`tablet must read visibly larger than phone, width ratio=${deviceSizeRatio}`);
+  const deviceOrder=await page.evaluate(()=>{const d=document.querySelector('.desktop-frame').getBoundingClientRect(),t=document.querySelector('.tablet-frame').getBoundingClientRect(),p=document.querySelector('.phone-frame').getBoundingClientRect();return {monitorTabletGap:t.left-d.right,tabletPhoneGap:p.left-t.right}});
+  assert.ok(deviceOrder.monitorTabletGap>=-1&&deviceOrder.tabletPhoneGap>=-1,`devices must sit separately on a shared baseline, not overlap: ${JSON.stringify(deviceOrder)}`);
   const standAlignment=await page.evaluate(()=>{const m=document.querySelector('.desktop-frame').getBoundingClientRect(),s=document.querySelector('.desktop-stand').getBoundingClientRect();return Math.abs((m.left+m.width/2)-(s.left+s.width/2))});
   assert.ok(standAlignment<2,`monitor stand must be centered under display, offset=${standAlignment}px`);
   const bezel=await page.locator('.desktop-frame').evaluate(e=>parseFloat(getComputedStyle(e).borderLeftWidth));
