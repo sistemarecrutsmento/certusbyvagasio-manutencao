@@ -23,7 +23,11 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   const mobile=await page.evaluate(()=>({width:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
   assert.ok(mobile.width<=mobile.client+1,'mobile page must not expand viewport');
   assert.equal(await page.locator('.desktop-frame img').count(),1);
-  assert.equal(await page.locator('.phone-frame img').count(),2);
+  assert.equal(await page.locator('.phone-frame img').count(),1);
+  assert.equal(await page.locator('.tablet-frame img').count(),1);
+  assert.equal(await page.locator('.desktop-frame img').count(),1);
+  const deviceRatios=await page.evaluate(()=>['.desktop-frame img','.tablet-frame img','.phone-frame img'].map(s=>{const i=document.querySelector(s),r=i.getBoundingClientRect();return {selector:s,actual:r.width/r.height,native:i.naturalWidth/i.naturalHeight}}));
+  assert.ok(deviceRatios.every(x=>Math.abs(x.actual-x.native)<0.04),`device screenshots must preserve their original proportions: ${JSON.stringify(deviceRatios)}`);
   assert.ok(await page.getByRole('link',{name:/Solicitar demonstração/}).count()>=1);
  }finally{await browser.close();await new Promise(r=>server.close(r))}
 });
