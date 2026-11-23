@@ -88,7 +88,7 @@
   </div>
 </dialog>
 <script>
-(()=>{const dialog=document.getElementById('blackfriday-promo');if(!dialog)return;const key='certus-black-friday-promo-dismissed-2026';const close=()=>{if(dialog.open)dialog.close()};dialog.addEventListener('close',()=>{try{sessionStorage.setItem(key,'1')}catch{}});document.getElementById('promo-close').addEventListener('click',close);dialog.addEventListener('click',event=>{if(event.target===dialog)close()});try{if(sessionStorage.getItem(key)!=='1')dialog.showModal()}catch{dialog.showModal()}})();
+(()=>{const dialog=document.getElementById('blackfriday-promo');if(!dialog)return;const key='certus-black-friday-promo-dismissed-2026';const remember=()=>{try{sessionStorage.setItem(key,'1')}catch{}};const close=()=>{remember();if(dialog.open)dialog.close()};dialog.addEventListener('close',remember);document.getElementById('promo-close').addEventListener('click',close);dialog.addEventListener('click',event=>{if(event.target===dialog)close()});try{if(sessionStorage.getItem(key)!=='1')dialog.showModal()}catch{dialog.showModal()}})();
 </script>
 </body>
 </html>
