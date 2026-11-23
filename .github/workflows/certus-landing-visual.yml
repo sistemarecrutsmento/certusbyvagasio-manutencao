@@ -1,0 +1,26 @@
+name: Certus landing page visual validation
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'assets/**'
+      - 'tests/landing-visual.test.cjs'
+      - '.github/workflows/certus-landing-visual.yml'
+jobs:
+  landing-visual:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - run: mkdir -p landing-preview && node --test --test-reporter=spec tests/landing-visual.test.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: certus-landing-desktop-mobile-preview
+          path: landing-preview/*.png
+          if-no-files-found: error
+          retention-days: 7
