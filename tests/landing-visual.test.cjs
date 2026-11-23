@@ -13,6 +13,20 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(`http://127.0.0.1:${server.address().port}/`,{waitUntil:'networkidle'});
+  const promo=page.locator('#blackfriday-promo');
+  await promo.waitFor({state:'visible'});
+  assert.equal(await promo.evaluate(d=>d.open),true,'promotion modal should open on first visit');
+  assert.match(await promo.innerText(),/Black Friday Certus/);
+  assert.match(await promo.innerText(),/Black2026/);
+  assert.match(await promo.innerText(),/25% de desconto/);
+  assert.equal(await promo.locator('img').evaluate(i=>i.complete&&i.naturalWidth===1024),true,'promotion artwork should load');
+  const promoLink=await promo.getByRole('link',{name:/Quero aproveitar a promoção/}).getAttribute('href');
+  assert.match(promoLink,/wa\.me\/5516997902168/,'promotion CTA should open the confirmed commercial WhatsApp');
+  await promo.getByRole('button',{name:'Fechar promoção'}).click();
+  assert.equal(await promo.evaluate(d=>d.open),false,'X should close the promotion');
+  assert.equal(await page.evaluate(()=>sessionStorage.getItem('certus-black-friday-promo-dismissed-2026')),'1','dismissal should persist for this browser session');
+  await page.reload({waitUntil:'networkidle'});
+  assert.equal(await promo.evaluate(d=>d.open),false,'a dismissed promotion should not reopen on refresh in the same session');
   await page.getByRole('heading',{name:/Controle de jornada/}).waitFor();
   const desktop=await page.evaluate(()=>({width:document.documentElement.scrollWidth,client:document.documentElement.clientWidth,imgs:[...document.images].map(i=>({src:i.getAttribute('src'),loaded:i.complete&&i.naturalWidth>0}))}));
   assert.ok(desktop.width<=desktop.client+1,'desktop page must not overflow horizontally');
@@ -20,6 +34,9 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.deepEqual(errors,[]);
   await page.screenshot({path:'landing-preview/desktop.png',fullPage:true});
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:'landing-preview/mobile.png',fullPage:true});
+  const mobilePromo=await page.locator('#blackfriday-promo').evaluate(d=>{const r=d.getBoundingClientRect();return {open:d.open,width:r.width,client:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth}});
+  assert.equal(mobilePromo.open,false);
+  assert.ok(mobilePromo.width<=mobilePromo.client,'promotion dialog fits mobile viewport');
   const mobile=await page.evaluate(()=>({width:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
   assert.ok(mobile.width<=mobile.client+1,'mobile page must not expand viewport');
   assert.equal(await page.locator('.desktop-frame img').count(),1);
