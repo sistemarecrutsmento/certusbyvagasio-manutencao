@@ -28,6 +28,16 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.equal(await page.locator('.desktop-frame img').count(),1);
   const deviceRatios=await page.evaluate(()=>['.desktop-frame img','.tablet-frame img','.phone-frame img'].map(s=>{const i=document.querySelector(s),r=i.getBoundingClientRect();return {selector:s,actual:r.width/r.height,native:i.naturalWidth/i.naturalHeight}}));
   assert.ok(deviceRatios.every(x=>Math.abs(x.actual-x.native)<0.04),`device screenshots must preserve their original proportions: ${JSON.stringify(deviceRatios)}`);
+  const portraitTablet=await page.locator('.tablet-frame img').evaluate(i=>i.naturalHeight>i.naturalWidth);
+  assert.equal(portraitTablet,true,'shared terminal must be shown on a portrait tablet');
+  const deviceSizeRatio=await page.evaluate(()=>document.querySelector('.tablet-frame').getBoundingClientRect().width/document.querySelector('.phone-frame').getBoundingClientRect().width);
+  assert.ok(deviceSizeRatio>1.7,`portrait tablet must be clearly larger than phone, width ratio=${deviceSizeRatio}`);
+  const deviceOrder=await page.evaluate(()=>{const d=document.querySelector('.desktop-frame').getBoundingClientRect(),t=document.querySelector('.tablet-frame').getBoundingClientRect(),p=document.querySelector('.phone-frame').getBoundingClientRect();return {monitorTabletGap:t.left-d.right,tabletPhoneGap:p.left-t.right}});
+  assert.ok(deviceOrder.monitorTabletGap>=-1&&deviceOrder.tabletPhoneGap>=-1,`devices must sit separately on a shared baseline, not overlap: ${JSON.stringify(deviceOrder)}`);
+  const standAlignment=await page.evaluate(()=>{const m=document.querySelector('.desktop-frame').getBoundingClientRect(),s=document.querySelector('.desktop-stand').getBoundingClientRect();return Math.abs((m.left+m.width/2)-(s.left+s.width/2))});
+  assert.ok(standAlignment<2,`monitor stand must be centered under display, offset=${standAlignment}px`);
+  const bezel=await page.locator('.desktop-frame').evaluate(e=>parseFloat(getComputedStyle(e).borderLeftWidth));
+  assert.ok(bezel<=1.5,`monitor bezel should be slim, got ${bezel}px`);
   assert.ok(await page.getByRole('link',{name:/Solicitar demonstração/}).count()>=1);
  }finally{await browser.close();await new Promise(r=>server.close(r))}
 });
