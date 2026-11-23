@@ -20,6 +20,7 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.match(await promo.innerText(),/Black2026/);
   assert.match(await promo.innerText(),/25% de desconto/);
   assert.equal(await promo.locator('img').evaluate(i=>i.complete&&i.naturalWidth===1024),true,'promotion artwork should load');
+  await page.screenshot({path:'landing-preview/promo-desktop.png'});
   const promoLink=await promo.getByRole('link',{name:/Quero aproveitar a promoção/}).getAttribute('href');
   assert.match(promoLink,/wa\.me\/5516997902168/,'promotion CTA should open the confirmed commercial WhatsApp');
   await promo.getByRole('button',{name:'Fechar promoção'}).click();
@@ -33,10 +34,16 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.ok(desktop.imgs.every(i=>i.loaded),`all landing images should load: ${JSON.stringify(desktop.imgs)}`);
   assert.deepEqual(errors,[]);
   await page.screenshot({path:'landing-preview/desktop.png',fullPage:true});
-  await page.setViewportSize({width:390,height:844});await page.screenshot({path:'landing-preview/mobile.png',fullPage:true});
+  await page.setViewportSize({width:390,height:844});
+  await page.evaluate(()=>sessionStorage.removeItem('certus-black-friday-promo-dismissed-2026'));
+  await page.reload({waitUntil:'networkidle'});
+  await page.locator('#blackfriday-promo').waitFor({state:'visible'});
   const mobilePromo=await page.locator('#blackfriday-promo').evaluate(d=>{const r=d.getBoundingClientRect();return {open:d.open,width:r.width,client:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth}});
-  assert.equal(mobilePromo.open,false);
+  assert.equal(mobilePromo.open,true,'promotion modal should also open on mobile');
   assert.ok(mobilePromo.width<=mobilePromo.client,'promotion dialog fits mobile viewport');
+  await page.screenshot({path:'landing-preview/promo-mobile.png'});
+  await page.locator('#promo-close').click();
+  await page.screenshot({path:'landing-preview/mobile.png',fullPage:true});
   const mobile=await page.evaluate(()=>({width:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
   assert.ok(mobile.width<=mobile.client+1,'mobile page must not expand viewport');
   assert.equal(await page.locator('.desktop-frame img').count(),1);
