@@ -38,6 +38,21 @@ test('Certus sales landing serves its real app screenshots and fits desktop/mobi
   assert.ok(standAlignment<2,`monitor stand must be centered under display, offset=${standAlignment}px`);
   const bezel=await page.locator('.desktop-frame').evaluate(e=>parseFloat(getComputedStyle(e).borderLeftWidth));
   assert.ok(bezel<=2.5,`monitor bezel should be slim, got ${bezel}px`);
+  const tourTabs=page.locator('.tour-tab');
+  assert.equal(await tourTabs.count(),17,'visual tour should cover all current company-management sections, employee portal and shared terminal');
+  for(let i=0;i<await tourTabs.count();i++){
+   const tab=tourTabs.nth(i),src=await tab.getAttribute('data-tour-src'),label=await tab.getAttribute('data-tour-title');
+   await tab.click();
+   await page.waitForFunction(src=>document.querySelector('#tour-image')?.getAttribute('src')===src,src,{timeout:10000});
+   await page.locator('#tour-image').evaluate(img=>img.decode());
+   assert.equal((await page.locator('#tour-title').innerText()).trim(),label,`tour screen ${label} should be selectable`);
+   assert.ok(await page.locator('#tour-image').evaluate(img=>img.naturalWidth>0),`screenshot ${src} should load`);
+  }
+  await page.locator('.tour-tab').first().click();
+  await page.locator('#tour-expand').click();
+  await page.locator('#tour-dialog[open]').waitFor();
+  await page.locator('#tour-dialog-close').click();
+  await assert.deepEqual(errors,[]);
   assert.ok(await page.getByRole('link',{name:/Solicitar demonstração/}).count()>=1);
  }finally{await browser.close();await new Promise(r=>server.close(r))}
 });
