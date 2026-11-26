@@ -15,6 +15,22 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   await page.goto(`http://127.0.0.1:${server.address().port}/`,{waitUntil:'networkidle'});
   await page.getByRole('heading',{name:/Controle de jornada/}).waitFor();
   assert.equal(await page.locator('#blackfriday-promo').count(),0,'the removed promotion modal must stay absent');
+  const heroPrimary=page.locator('.hero-actions .btn-primary');
+  assert.match(await heroPrimary.innerText(),/Conheça o Certus/);
+  assert.equal(await heroPrimary.getAttribute('href'),'#demonstracao','Conheça o Certus should take visitors to Explore the Certus');
+  const heroSecondary=page.locator('.hero-actions .btn-outline');
+  assert.equal((await heroSecondary.innerText()).trim(),'Já sou cliente');
+  assert.equal(await heroSecondary.getAttribute('href'),'https://vagasio.com.br/certus/','Já sou cliente should open the real login page');
+  const headerDemo=page.locator('.header-actions .btn-primary');
+  assert.match((await headerDemo.innerText()).trim(),/Solicitar demonstração/);
+  assert.match(await headerDemo.getAttribute('href'),/^https:\/\/wa\.me\/5516997902168\?/,'Solicitar demonstração should open the confirmed commercial WhatsApp');
+  const heroProof=(await page.locator('.hero-checks').innerText()).replace(/\s+/g,' ');
+  assert.match(heroProof,/off-line no terminal compartilhado/i);
+  assert.match(heroProof,/Demonstração e teste gratuitos/i);
+  assert.match(heroProof,/Planos a partir de R\$ 59,90\/mês/i);
+  const pricing=(await page.locator('#planos').innerText()).replace(/\s+/g,' ');
+  assert.match(pricing,/Planos a partir de R\$ 59,90\/mês/i);
+  assert.match(pricing,/Demonstração e teste gratuitos/i);
   assert.equal(await page.locator('.hero').count(),1);
   const palette=await page.evaluate(()=>{
    const css=s=>getComputedStyle(document.querySelector(s));
