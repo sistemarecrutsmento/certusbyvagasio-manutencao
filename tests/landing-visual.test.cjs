@@ -24,13 +24,16 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   const headerDemo=page.locator('.header-actions .btn-primary');
   assert.match((await headerDemo.innerText()).trim(),/Solicitar demonstração/);
   assert.match(await headerDemo.getAttribute('href'),/^https:\/\/wa\.me\/5516997902168\?/,'Solicitar demonstração should open the confirmed commercial WhatsApp');
-  const heroProof=(await page.locator('.hero-checks').innerText()).replace(/\s+/g,' ');
-  assert.match(heroProof,/off-line no terminal compartilhado/i);
-  assert.match(heroProof,/Demonstração e teste gratuitos/i);
-  assert.match(heroProof,/Planos a partir de R\$ 59,90\/mês/i);
+  const heroText=(await page.locator('.hero').innerText()).replace(/\s+/g,' ');
+  assert.doesNotMatch(heroText,/off-line|gratuitos|59,90/i,'commercial proof points should not be stacked in the hero');
+  const offline=page.locator('#solucoes .offline-note');
+  assert.equal(await offline.count(),1,'offline message should be placed with product capabilities');
+  assert.match((await offline.innerText()).replace(/\s+/g,' '),/funciona off-line em todo o sistema/i);
+  assert.match((await offline.innerText()).replace(/\s+/g,' '),/sincronização prevista para cada fluxo e perfil/i);
   const pricing=(await page.locator('#planos').innerText()).replace(/\s+/g,' ');
-  assert.match(pricing,/Planos a partir de R\$ 59,90\/mês/i);
-  assert.match(pricing,/Demonstração e teste gratuitos/i);
+  assert.match(pricing,/R\$ 59,90\s*\/mês/i,'starting price belongs in the plans section');
+  assert.match(pricing,/Demonstração e teste gratuitos/i,'free demo and test belong with the commercial plans CTA');
+  assert.equal(await page.locator('#planos .plan-highlights .plan-fact').count(),2,'present price and free trial as two separate visual items');
   assert.equal(await page.locator('.hero').count(),1);
   const palette=await page.evaluate(()=>{
    const css=s=>getComputedStyle(document.querySelector(s));
@@ -51,6 +54,9 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>({width:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
   assert.ok(mobile.width<=mobile.client+1,'mobile page must not expand viewport');
+  const planFactRects=await page.locator('#planos .plan-fact').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {top:r.top,bottom:r.bottom,width:r.width}}));
+  assert.equal(planFactRects.length,2);
+  assert.ok(planFactRects[1].top>=planFactRects[0].bottom-1,'price and free-trial tiles should stack clearly on mobile');
   assert.equal(await page.locator('.desktop-frame img').count(),1);
   assert.equal(await page.locator('.phone-frame img').count(),1);
   assert.equal(await page.locator('.tablet-frame img').count(),1);
