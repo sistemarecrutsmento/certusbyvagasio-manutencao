@@ -55,11 +55,12 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.equal(backgroundMotion.heroLine,'aurora-ring-fine','fine contour ring has independent motion');
   assert.equal(backgroundMotion.plans,'cta-color-flow','plans section uses a slow flowing gradient');
   assert.equal(backgroundMotion.plansRing,'cta-ring-drift','plans contour moves subtly');
-  const purpleMotionColors=await page.evaluate(()=>({hero:getComputedStyle(document.querySelector('#inicio')).backgroundImage,heroBand:getComputedStyle(document.querySelector('#inicio'),'::before').borderTopColor,heroLine:getComputedStyle(document.querySelector('#inicio'),'::after').borderTopColor,plans:getComputedStyle(document.querySelector('#planos')).backgroundImage}));
-  assert.match(purpleMotionColors.hero,/rgba\(155, 80, 201, 0\.8\)/,'hero aurora should have a clearly visible violet glow');
-  assert.match(purpleMotionColors.hero,/rgba\(98, 50, 125, 0\.73\)/,'violet tones should be a dominant part of the moving hero backdrop');
-  assert.match(purpleMotionColors.heroBand,/rgba\(210, 160, 237, 0\.4\)/,'large contour should pick up the purple light');
-  assert.match(purpleMotionColors.plans,/rgb\(97, 49, 125\)/,'plans backdrop should carry a stronger purple accent');
+  const wineMotionColors=await page.evaluate(()=>({hero:getComputedStyle(document.querySelector('#inicio')).backgroundImage,heroBand:getComputedStyle(document.querySelector('#inicio'),'::before').borderTopColor,plans:getComputedStyle(document.querySelector('#planos')).backgroundImage}));
+  assert.match(wineMotionColors.hero,/rgba\(168, 13, 76, 0\.8\)/,'hero aurora should have a clearly visible brand-wine glow');
+  assert.match(wineMotionColors.hero,/rgba\(123, 6, 54, 0\.73\)/,'deep wine should be a dominant part of the moving hero backdrop');
+  assert.match(wineMotionColors.heroBand,/rgba\(199, 123, 156, 0\.4\)/,'large contour should pick up a subtle wine tint');
+  assert.match(wineMotionColors.plans,/rgb\(123, 6, 54\)/,'plans backdrop should use the brand wine');
+  assert.doesNotMatch(wineMotionColors.hero,/rgba\(155, 80, 201/,'remove the mistaken violet hue from the aurora');
   const initialAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
   await page.waitForTimeout(900);
   const nextAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
