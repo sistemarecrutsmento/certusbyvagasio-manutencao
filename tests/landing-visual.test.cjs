@@ -55,9 +55,9 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.equal(backgroundMotion.heroLine,'aurora-ring-fine','fine contour ring has independent motion');
   assert.equal(backgroundMotion.plans,'cta-color-flow','plans section uses a slow flowing gradient');
   assert.equal(backgroundMotion.plansRing,'cta-ring-drift','plans contour moves subtly');
-  const initialAuroraPosition=await page.locator('.dark-shell').evaluate(e=>getComputedStyle(e).backgroundPosition);
+  const initialAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
   await page.waitForTimeout(900);
-  const nextAuroraPosition=await page.locator('.dark-shell').evaluate(e=>getComputedStyle(e).backgroundPosition);
+  const nextAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
   assert.notEqual(nextAuroraPosition,initialAuroraPosition,'the aurora background position changes over time');
   assert.equal(await page.locator('#back-to-top').getAttribute('aria-hidden'),'true','back-to-top is hidden until the visitor scrolls');
   assert.ok(await page.locator('.feature-card[data-reveal]').count()>=6,'feature cards should be progressively revealed on scroll');
