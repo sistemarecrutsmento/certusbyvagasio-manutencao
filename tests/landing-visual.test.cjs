@@ -33,7 +33,8 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.match((await offline.innerText()).replace(/\s+/g,' '),/funciona off-line em todo o sistema/i);
   assert.match((await offline.innerText()).replace(/\s+/g,' '),/sincronização prevista para cada fluxo e perfil/i);
   const pricing=(await page.locator('#planos').innerText()).replace(/\s+/g,' ');
-  assert.match(pricing,/R\$ 59,90\s*\/mês/i,'starting price belongs in the plans section');
+  assert.match(pricing,/R\$ 99,00\s*\/mês/i,'updated starting price belongs in the plans section');
+  assert.doesNotMatch(pricing,/R\$ 59,90/i,'the outdated starting price must not remain in the plans section');
   assert.match(pricing,/Demonstração e teste gratuitos/i,'free demo and test belong with the commercial plans CTA');
   assert.equal(await page.locator('#planos .plan-highlights .plan-fact').count(),2,'present price and free trial as two separate visual items');
   assert.equal(await page.locator('.hero').count(),1);
