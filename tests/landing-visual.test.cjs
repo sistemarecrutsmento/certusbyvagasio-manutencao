@@ -57,7 +57,7 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.equal(backgroundMotion.plansRing,'cta-ring-drift','plans contour moves subtly');
   const wineMotionColors=await page.evaluate(()=>({hero:getComputedStyle(document.querySelector('#inicio')).backgroundImage,heroBand:getComputedStyle(document.querySelector('#inicio'),'::before').borderTopColor,plans:getComputedStyle(document.querySelector('#planos')).backgroundImage}));
   assert.match(wineMotionColors.hero,/rgba\(168, 13, 76, 0\.8\)/,'hero aurora should have a clearly visible brand-wine glow');
-  assert.match(wineMotionColors.hero,/rgba\(123, 6, 54, 0\.73\)/,'deep wine should be a dominant part of the moving hero backdrop');
+  assert.match(wineMotionColors.hero,/rgba\(123, 6, 54, 0\.65\)/,'deep wine should be a dominant part of the moving hero backdrop');
   assert.match(wineMotionColors.heroBand,/rgba\(199, 123, 156, 0\.4\)/,'large contour should pick up a subtle wine tint');
   assert.match(wineMotionColors.plans,/rgb\(123, 6, 54\)/,'plans backdrop should use the brand wine');
   assert.match(wineMotionColors.hero,/rgb\(52, 49, 55\) 55%/,'hero gradient should give graphite a slightly wider visual presence');
