@@ -55,6 +55,11 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.equal(backgroundMotion.heroLine,'aurora-ring-fine','fine contour ring has independent motion');
   assert.equal(backgroundMotion.plans,'cta-color-flow','plans section uses a slow flowing gradient');
   assert.equal(backgroundMotion.plansRing,'cta-ring-drift','plans contour moves subtly');
+  const purpleMotionColors=await page.evaluate(()=>({hero:getComputedStyle(document.querySelector('#inicio')).backgroundImage,heroBand:getComputedStyle(document.querySelector('#inicio'),'::before').borderTopColor,heroLine:getComputedStyle(document.querySelector('#inicio'),'::after').borderTopColor,plans:getComputedStyle(document.querySelector('#planos')).backgroundImage}));
+  assert.match(purpleMotionColors.hero,/rgba\(155, 80, 201, 0\.8\)/,'hero aurora should have a clearly visible violet glow');
+  assert.match(purpleMotionColors.hero,/rgba\(98, 50, 125, 0\.73\)/,'violet tones should be a dominant part of the moving hero backdrop');
+  assert.match(purpleMotionColors.heroBand,/rgba\(210, 160, 237, 0\.4\)/,'large contour should pick up the purple light');
+  assert.match(purpleMotionColors.plans,/rgb\(97, 49, 125\)/,'plans backdrop should carry a stronger purple accent');
   const initialAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
   await page.waitForTimeout(900);
   const nextAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
