@@ -49,6 +49,16 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.equal(palette.featureText,'rgb(123, 6, 54)','feature icons should use wine');
   assert.equal(palette.eyebrow,'rgb(123, 6, 54)','light-section accents should use wine');
   assert.equal(await page.locator('#back-to-top').getAttribute('href'),'#inicio','floating button should return to the page start');
+  const backgroundMotion=await page.evaluate(()=>({hero:getComputedStyle(document.querySelector('.dark-shell')).animationName,heroBand:getComputedStyle(document.querySelector('.dark-shell'),'::before').animationName,heroLine:getComputedStyle(document.querySelector('.dark-shell'),'::after').animationName,plans:getComputedStyle(document.querySelector('#planos')).animationName,plansRing:getComputedStyle(document.querySelector('#planos'),'::after').animationName}));
+  assert.equal(backgroundMotion.hero,'aurora-drift','hero background gently moves like an aurora');
+  assert.equal(backgroundMotion.heroBand,'aurora-ring','large existing contour ring gently drifts');
+  assert.equal(backgroundMotion.heroLine,'aurora-ring-fine','fine contour ring has independent motion');
+  assert.equal(backgroundMotion.plans,'cta-color-flow','plans section uses a slow flowing gradient');
+  assert.equal(backgroundMotion.plansRing,'cta-ring-drift','plans contour moves subtly');
+  const initialAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
+  await page.waitForTimeout(900);
+  const nextAuroraPosition=await page.locator('#inicio').evaluate(e=>getComputedStyle(e).backgroundPosition);
+  assert.notEqual(nextAuroraPosition,initialAuroraPosition,'the aurora background position changes over time');
   assert.equal(await page.locator('#back-to-top').getAttribute('aria-hidden'),'true','back-to-top is hidden until the visitor scrolls');
   assert.ok(await page.locator('.feature-card[data-reveal]').count()>=6,'feature cards should be progressively revealed on scroll');
   assert.ok(await page.locator('.feature-card').first().evaluate(e=>getComputedStyle(e).transitionDuration.split(',')[0].trim()!=='0s'),'interactive cards should have a subtle transition');
@@ -104,6 +114,8 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   await reducedPage.emulateMedia({reducedMotion:'reduce'});
   await reducedPage.goto(`http://127.0.0.1:${server.address().port}/`,{waitUntil:'networkidle'});
   assert.equal(await reducedPage.locator('html').evaluate(e=>e.classList.contains('motion-ready')),false,'scroll-reveal motion is disabled when reduced motion is requested');
+  const reducedMotionNames=await reducedPage.evaluate(()=>({hero:getComputedStyle(document.querySelector('.dark-shell')).animationName,heroBand:getComputedStyle(document.querySelector('.dark-shell'),'::before').animationName,plans:getComputedStyle(document.querySelector('#planos')).animationName}));
+  assert.deepEqual(reducedMotionNames,{hero:'none',heroBand:'none',plans:'none'},'moving backgrounds must stop for reduced-motion preference');
   assert.equal(await reducedPage.locator('.feature-card').first().evaluate(e=>getComputedStyle(e).opacity),'1','all content remains visible without reveal animation');
   await reducedPage.evaluate(()=>window.scrollTo({top:700,behavior:'instant'}));
   await reducedPage.waitForFunction(()=>document.querySelector('#back-to-top')?.getAttribute('aria-hidden')==='false');
