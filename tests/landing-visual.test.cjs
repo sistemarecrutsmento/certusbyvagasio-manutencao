@@ -28,6 +28,8 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.doesNotMatch(heroText,/off-line|gratuitos|59,90/i,'commercial proof points should not be stacked in the hero');
   const offline=page.locator('#solucoes .offline-note');
   assert.equal(await offline.count(),1,'offline message should be placed with product capabilities');
+  const offlineWidth=await offline.evaluate(e=>e.getBoundingClientRect().width),sectionWidth=await page.locator('#solucoes .section-grid').evaluate(e=>e.getBoundingClientRect().width);
+  assert.ok(offlineWidth>=sectionWidth*.9,`offline note should use the full feature section width (${offlineWidth}/${sectionWidth})`);
   assert.match((await offline.innerText()).replace(/\s+/g,' '),/funciona off-line em todo o sistema/i);
   assert.match((await offline.innerText()).replace(/\s+/g,' '),/sincronização prevista para cada fluxo e perfil/i);
   const pricing=(await page.locator('#planos').innerText()).replace(/\s+/g,' ');
