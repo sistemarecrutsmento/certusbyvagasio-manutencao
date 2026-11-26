@@ -48,8 +48,25 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   assert.equal(palette.featureBg,'rgb(246, 245, 246)','feature icon backing should use ice');
   assert.equal(palette.featureText,'rgb(123, 6, 54)','feature icons should use wine');
   assert.equal(palette.eyebrow,'rgb(123, 6, 54)','light-section accents should use wine');
+  assert.equal(await page.locator('#back-to-top').getAttribute('href'),'#inicio','floating button should return to the page start');
+  assert.equal(await page.locator('#back-to-top').getAttribute('aria-hidden'),'true','back-to-top is hidden until the visitor scrolls');
+  assert.ok(await page.locator('.feature-card[data-reveal]').count()>=6,'feature cards should be progressively revealed on scroll');
+  assert.ok(await page.locator('.feature-card').first().evaluate(e=>getComputedStyle(e).transitionDuration.split(',')[0].trim()!=='0s'),'interactive cards should have a subtle transition');
+  await page.evaluate(()=>window.scrollTo({top:650,behavior:'instant'}));
+  await page.waitForFunction(()=>document.querySelector('#back-to-top')?.getAttribute('aria-hidden')==='false');
+  await page.locator('#back-to-top').click();
+  await page.waitForFunction(()=>window.scrollY<5,{timeout:6000});
+  await page.waitForFunction(()=>document.querySelector('#back-to-top')?.getAttribute('aria-hidden')==='true');
   const desktop=await page.evaluate(()=>({width:document.documentElement.scrollWidth,client:document.documentElement.clientWidth,imgs:[...document.images].map(i=>({src:i.getAttribute('src'),loaded:i.complete&&i.naturalWidth>0}))}));
   assert.ok(desktop.width<=desktop.client+1,'desktop page must not overflow horizontally');
+  const revealTargets=await page.locator('[data-reveal]').count();
+  for(let i=0;i<revealTargets;i++){
+   await page.locator('[data-reveal]').nth(i).evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+   await page.waitForTimeout(45);
+  }
+  assert.equal(await page.locator('[data-reveal]:not(.is-visible)').count(),0,'every section and card becomes visible as it enters the viewport');
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+  await page.waitForTimeout(650);
   assert.ok(desktop.imgs.every(i=>i.loaded),`all landing images should load: ${JSON.stringify(desktop.imgs)}`);
   assert.deepEqual(errors,[]);
   await page.screenshot({path:'landing-preview/desktop.png',fullPage:true});
@@ -83,5 +100,16 @@ test('Certus landing uses the approved palette and renders on desktop and mobile
   await page.locator('#tour-dialog-close').click();
   assert.deepEqual(errors,[]);
   assert.ok(await page.getByRole('link',{name:/Solicitar demonstração/}).count()>=1);
+  const reducedPage=await browser.newPage({viewport:{width:390,height:844}});
+  await reducedPage.emulateMedia({reducedMotion:'reduce'});
+  await reducedPage.goto(`http://127.0.0.1:${server.address().port}/`,{waitUntil:'networkidle'});
+  assert.equal(await reducedPage.locator('html').evaluate(e=>e.classList.contains('motion-ready')),false,'scroll-reveal motion is disabled when reduced motion is requested');
+  assert.equal(await reducedPage.locator('.feature-card').first().evaluate(e=>getComputedStyle(e).opacity),'1','all content remains visible without reveal animation');
+  await reducedPage.evaluate(()=>window.scrollTo({top:700,behavior:'instant'}));
+  await reducedPage.waitForFunction(()=>document.querySelector('#back-to-top')?.getAttribute('aria-hidden')==='false');
+  await reducedPage.locator('#back-to-top').click();
+  await reducedPage.waitForFunction(()=>window.scrollY<5,{timeout:1500});
+  await reducedPage.close();
+  assert.deepEqual(errors,[]);
  }finally{await browser.close();await new Promise(r=>server.close(r))}
 });
